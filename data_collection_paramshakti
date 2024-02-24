@@ -1,0 +1,175 @@
+echo "Enter start date: "
+read s
+echo "Enter end date: "
+read e
+echo "Enter file name: "
+read f
+
+cai=0
+catm=0
+ccb=0
+ccc=0
+cce=0
+ccfd=0
+ccm=0
+ccp=0
+ccps=0
+ccrpt=0
+cdm=0
+cde=0
+cds=0
+cgg=0
+chyd=0
+cli=0
+cmac=0
+cmm=0
+cmpm=0
+com=0
+cse=0
+gai=0
+gatm=0
+gcb=0
+gc=0
+gce=0
+gcfd=0
+gcm=0
+gcp=0
+gcps=0
+gcrypt=0
+gdm=0
+gde=0
+gds=0
+ggg=0
+ghyd=0
+gli=0
+gmac=0
+gmm=0
+gmpm=0
+gom=0
+gse=0
+
+t=""$s"_"$e".dat"
+touch "$t"
+line_count=$(wc -l < "$f")
+
+#echo $line_count
+line_read=0
+while IFS= read -r line; do
+    username=$(echo "$line"|awk '{print $1}')
+    cp=$(sudo sreport cluster AccountUtilizationByUser accounts=$username start=$s end=$e -T cpu -n|head -n 1|awk '{print $4}')
+    gp=$(sudo sreport cluster AccountUtilizationByUser accounts=$username start=$s end=$e -T gres/gpu -n|head -n 1|awk '{print $4}')
+    c=$((cp))
+    g=$((gp))
+    domain=$(echo "$line"|awk '{print $2}')
+    line_read=$((line_read + 1))
+    echo $line_read/$line_count
+    #echo "$username  $domain  $c  $g"
+    if [ "$domain" == "AI" ]; then
+	cai=$(( c + cai ))
+	gai=$(( g + gai ))
+	#echo "AI $cai $gai"
+    elif [ "$domain" == "ATM" ]; then
+        catm=$(( c + catm ))
+        gatm=$(( g + gatm ))
+        #echo "ATM $catm $gatm"
+    elif [ "$domain" == "CB/BI" ]; then
+        ccb=$(( c + ccb ))
+        gcb=$(( g + gcb ))
+        #echo "CB/BI $ccb $gcb"
+    elif [ "$domain" == "CC" ]; then
+        ccc=$(( c + ccc ))
+        gc=$(( g + gc ))
+        #echo "CC $ccc $gc"
+    elif [ "$domain" == "CE" ]; then
+        cce=$(( c + cce ))
+        gce=$(( g + gce ))
+        #echo "CE $cce $gce"
+    elif [ "$domain" == "CFD" ]; then
+        ccfd=$(( c + ccfd ))
+        gcfd=$(( g + gcfd ))
+        #echo "CFD $ccfd $gcfd"
+    elif [ "$domain" == "CM" ]; then
+        ccm=$(( c + ccm ))
+        gcm=$(( g + gcm ))
+        #echo "CM $ccm $gcm"
+    elif [ "$domain" == "CP" ]; then
+        ccp=$(( c + ccp ))
+        gcp=$(( g + gcp ))
+        #echo "CP $ccp $gcp"
+    elif [ "$domain" == "CPS" ]; then
+        ccps=$(( c + ccps ))
+        gcps=$(( g + gcps ))
+        #echo "CPS $ccps $gcps"
+    elif [ "$domain" == "Crypt" ]; then
+        ccrpt=$(( c + ccrpt ))
+        gcrypt=$(( g + gcrypt ))
+        #echo "Crypt $ccrpt $gcrypt"
+    elif [ "$domain" == "DegMod" ]; then
+        cdm=$(( c + cdm ))
+        gdm=$(( g + gdm ))
+        #echo "DegMod $cdm $gdm"
+    elif [ "$domain" == "DisEle" ]; then
+        cde=$(( c + cde ))
+        gde=$(( g + gde ))
+        #echo "DisEle $cde $gde"
+    elif [ "$domain" == "DS" ]; then
+        cds=$(( c + cds ))
+        gds=$(( g + gds ))
+        #echo "DS $cds $gds"
+    elif [ "$domain" == "GG" ]; then
+        cgg=$(( c + cgg ))
+        ggg=$(( g + ggg ))
+        #echo "GG $cgg $ggg"
+    elif [ "$domain" == "Hyd" ]; then
+        chyd=$(( c + chyd ))
+        ghyd=$(( g + ghyd ))
+        #echo "Hyd $chyd $ghyd"
+    elif [ "$domain" == "LiBatteries" ]; then
+        cli=$(( c + cli ))
+        gli=$(( g + gli ))
+        #echo "LiBatteries $cli $gli"
+    elif [ "$domain" == "Macroeconomics" ]; then
+        cmac=$(( c + cmac ))
+        gmac=$(( g + gmac ))
+        #echo "Macroeconomics $cmac $gmac"
+    elif [ "$domain" == "MM" ]; then
+        cmm=$(( c + cmm ))
+        gmm=$(( g + gmm ))
+        #echo "MM $cmm $gmm"
+    elif [ "$domain" == "MPM" ]; then
+        cmpm=$(( c + cmpm ))
+        gmpm=$(( g + gmpm ))
+        #echo "MPM $cmpm $gmpm"
+    elif [ "$domain" == "OM" ]; then
+        com=$(( c + com ))
+        gom=$(( g + gom ))
+        #echo "OM $com $gom"
+    elif [ "$domain" == "SE" ]; then
+        cse=$(( c + cse ))
+        gse=$(( g + gse ))
+        #echo "SE $cse $gse"
+    fi
+    
+done < $f
+
+echo "ArtificialIntelligence $cai $gai" > "$t"
+echo "AtmosphericModeling $catm $gatm" >> "$t"
+echo "ComputationalBiology/Bioinformatics  $ccb $gcb" >> "$t"
+echo "ComputationalChemistry $ccc $gc" >> "$t"
+echo "ComputationalElectronics $cce $gce" >> "$t"
+echo "ComputationalFluidDynamics $ccfd $gcfd" >> "$t"
+echo "ComputationalMechanics $ccm $gcm" >> "$t"
+echo "ComputationalPhysics $ccp $gcp" >> "$t"
+echo "CyberPhysicalSystem $ccps $gcps" >> "$t"
+echo "Cryptography $ccrpt $gcrypt" >> "$t"
+echo "DegradationModeling $cdm $gdm" >> "$t"
+echo "DiscreteElement $cde $gde" >> "$t"
+echo "DataScience $cds $gds" >> "$t"
+echo "GeologyAndGeophysics $cgg $ggg" >> "$t"
+echo "Hydroclimataology $chyd $ghyd" >> "$t"
+echo "LiIonBatteries $cli $gli" >> "$t"
+echo "Macroeconomics $cmac $gmac" >> "$t"
+echo "MaterialsModeling $cmm $gmm" >> "$t"
+echo "Manufacturing $cmpm $gmpm" >> "$t"
+echo "OceanModeling $com $gom" >> "$t"
+echo "StructuralEngineering $cse $gse" >> "$t"
