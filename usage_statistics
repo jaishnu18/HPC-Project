@@ -1,0 +1,45 @@
+import matplotlib.pyplot as plt
+
+f = input()
+
+with open(f, 'r') as file:
+	data = [line.strip().split() for line in file]
+
+values = [int(row[2]) for row in data]
+
+labels = [row[0] for row in data]
+
+filtered_values = [value for value in values if value > 0]
+filtered_labels = [label for label, value in zip(labels, values) if value > 0]
+
+new_fil_value=[]
+new_fil_label=[]
+
+tot_val=sum(filtered_values)
+s=0
+other_domain_per=[]
+other_domain_label=[]
+for i in range(len(filtered_values)):
+	var=(filtered_values[i]*100)/tot_val
+	if var>2:
+		new_fil_value.append(var)
+		new_fil_label.append(filtered_labels[i])
+	else:
+		s+=var
+		other_domain_per.append(var)
+		other_domain_label.append(filtered_labels[i])
+
+new_fil_value.append(s)
+new_fil_label.append("OtherDomains")
+
+plt.pie(new_fil_value, labels=new_fil_label, startangle=140, pctdistance=0.85, autopct='%1.1f%%', radius=0.4)
+
+custom_labels = [f'{label} - {value/sum(new_fil_value)*100:.2f}%' for label, value in zip(other_domain_label, other_domain_per)]
+
+plt.legend(custom_labels, title='Other Domains', loc='upper right', bbox_to_anchor=(0.2, 0.3), handlelength=0)
+
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title('GPU usage in 2023',fontweight='bold')
+plt.show()
+for i in range(len(other_domain_label)):
+	print(other_domain_label[i], "-", other_domain_per[i])
